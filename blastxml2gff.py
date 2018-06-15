@@ -6,6 +6,7 @@ import Bio
 import Bio.SearchIO
 import argparse
 import matplotlib.colors
+import matplotlib.cm
 
 def strip_suffix(text, suffix):
     if not text.endswith(suffix):
@@ -38,13 +39,17 @@ writer = csv.writer(handle, delimiter='\t', dialect='excel')
 i = 0
 interval = 100
 for query in query_results:
-	print query
+	print query.seq_len
+	norm = matplotlib.colors.Normalize(vmin=1, vmax=query.seq_len, clip=True)
+        mapper = matplotlib.cm.ScalarMappable(norm=norm, cmap=matplotlib.cm.gist_rainbow)
 	for hit in query.hits:
 		GFFrow = ["HITID",".","TYPE","STARTCOORD","ENDCOORD",".","STRAND",".","ID=X"]
 		for hsp in hit.hsps:
 			description="query_start:"+str(hsp.query_start+1)+" "+"query_end:"+str(hsp.query_end+1)
 			start = 1e9
 			end = 0
+			color = mapper.to_rgba((hsp.query_start+1+hsp.query_end+1)/2.0,alpha=None)
+			color_hex = '#'+("%0.2X" % int(color[0]*255)+("%0.2X" % int(color[1]*255))+("%0.2X" % int(color[2]*255)))
 			if hsp.hit_start < start:
 				start = hsp.hit_start+1
 			if hsp.hit_end > end:
@@ -58,7 +63,7 @@ for query in query_results:
 				GFFrow[6] = "+"
 			if strand == -1:
 				GFFrow[6] = "-"
-			GFFrow[8] = "ID="+query.id+str(i)+";Description="+description
+			GFFrow[8] = "ID="+query.id+str(i)+";Description="+description+";Color="+str(color_hex)
 			writer.writerow(GFFrow)
 			i+=1
 		if i % interval == 0:
