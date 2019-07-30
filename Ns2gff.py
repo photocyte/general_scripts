@@ -41,12 +41,12 @@ feature = dict()
 
 def feature_to_gffrow(feat):
     GFFrow = ["HITID",".","TYPE","STARTCOORD","ENDCOORD",".","STRAND",".","ID=X"]
-        GFFrow[0] = feat['id']
-        GFFrow[2] = "unknown bases"
-        GFFrow[3] = feat['start']
-        GFFrow[4] = feat['stop']
-        GFFrow[6] = "+"
-        GFFrow[8] = "ID="+feat['id']+"-"+feat['count']
+    GFFrow[0] = feat['id']
+    GFFrow[2] = "unknown bases"
+    GFFrow[3] = feat['start']
+    GFFrow[4] = feat['stop']
+    GFFrow[6] = "+"
+    GFFrow[8] = "ID="+feat['id']+"-"+feat['count']
     return GFFrow
 
 print("Collecting Ns from FASTA records and writing to",output_filename,"...")
