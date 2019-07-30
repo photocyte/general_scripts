@@ -60,18 +60,18 @@ for record in fasta_records:
     ##Start scanning record.seq for Ns
     for i in range(0,len(record.seq)):
         if feature['status'] == False and (record.seq[i] == "N" or record.seq[i] == "n"):
-                        feature['status'] = True
-                        feature['start'] = i + 1 ##GFF 1 indexed
-                if feature['status'] == True and (record.seq[i] != "N" and record.seq[i] != "n"):
+            feature['status'] = True
+            feature['start'] = i + 1 ##GFF 1 indexed
+        if feature['status'] == True and (record.seq[i] != "N" and record.seq[i] != "n"):
             feature_count += 1
-                        feature['status'] = 'endfound'
-                        feature['stop'] = i ##Should be i - 1, but GFF 1 indexed
-                        feature['id'] = record.id
+            feature['status'] = 'endfound'
+            feature['stop'] = i ##Should be i - 1, but GFF 1 indexed
+            feature['id'] = record.id
             feature['count'] = "N"+str(feature_count)
-                        gffrow = feature_to_gffrow(feature)
+            gffrow = feature_to_gffrow(feature)
             writer.writerow(gffrow)
             features.append(feature)
-                        feature = dict()
+            feature = dict()
             feature['status'] = False
     count +=1
     if count % interval == 0:
