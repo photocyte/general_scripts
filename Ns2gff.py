@@ -7,6 +7,7 @@ import Bio.SeqIO
 import argparse
 import os
 import os.path
+import sys
 
 ##Point of this script is to take the Ns from a scaffolded fasta file, and produce a GFF file that can be viewed in a genome browser
 
@@ -22,12 +23,12 @@ args = parser.parse_args()
 if args.fasta_input.endswith(".gz"): 
     ##Decompress gzip compression on the fly
     result_handle = gzip.open(args.fasta_input)
-    print("Opening",args.fasta_input,"with gzip")
+    sys.stderr.write("Opening "+args.fasta_input+" with gzip\n")
 
 else:
     ##Try and fallback if its not gzip compressed
     result_handle = open(args.fasta_input)
-    print("Opening",args.fasta_input)
+    sys.stderr.write("Opening "+args.fasta_input+'\n')
 
 fasta_records = Bio.SeqIO.parse(result_handle,'fasta')
 output_filename = "./Ns2gff_"+os.path.basename(args.fasta_input)+".gff"
@@ -43,13 +44,13 @@ def feature_to_gffrow(feat):
     GFFrow = ["HITID",".","TYPE","STARTCOORD","ENDCOORD",".","STRAND",".","ID=X"]
     GFFrow[0] = feat['id']
     GFFrow[2] = "unknown bases"
-    GFFrow[3] = feat['start']
-    GFFrow[4] = feat['stop']
+    GFFrow[3] = str(feat['start'])
+    GFFrow[4] = str(feat['stop'])
     GFFrow[6] = "+"
     GFFrow[8] = "ID="+feat['id']+"-"+feat['count']
     return GFFrow
 
-print("Collecting Ns from FASTA records and writing to",output_filename,"...")
+sys.stderr.write("Collecting Ns from FASTA records and writing to standard out...\n")
 count = 0
 for record in fasta_records:
     feature['status'] = False
@@ -69,15 +70,15 @@ for record in fasta_records:
             feature['id'] = record.id
             feature['count'] = "N"+str(feature_count)
             gffrow = feature_to_gffrow(feature)
-            writer.writerow(gffrow)
+            sys.stdout.write("\t".join(gffrow)+"\n")
             features.append(feature)
             feature = dict()
             feature['status'] = False
     count +=1
     if count % interval == 0:
-        print("Completed:",count,"scaffolds.")
+        sys.stderr.write("Completed: "+str(count)+" scaffolds.\n")
         interval = interval * 10
-print("Found ",len(features),"strings of Ns in",count,"scaffolds.")
+sys.stderr.write("Found "+str(len(features))+" strings of Ns in "+str(count)+" scaffolds.\n")
 
 exit()
 
