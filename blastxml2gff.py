@@ -14,7 +14,7 @@ def strip_suffix(text, suffix):
     if not text.endswith(suffix):
         return text
     else:
-    	return text[:len(text)-len(suffix)]
+        return text[:len(text)-len(suffix)]
 
 
 ##
@@ -51,25 +51,25 @@ parser.add_argument('-v',
 args = parser.parse_args()
 
 if args.blast_output_xml.endswith(".gz"): 
-	result_handle = gzip.open(args.blast_output_xml)
+    result_handle = gzip.open(args.blast_output_xml)
 else:
-	##Try and fallback 
-	result_handle = open(args.blast_output_xml)
+    ##Try and fallback 
+    result_handle = open(args.blast_output_xml)
 
 query_results = Bio.SearchIO.parse(result_handle,'blast-xml')
 
 output_filename = args.blast_output_xml+".gff"
-handle = open(output_filename,"wb")
+handle = open(output_filename,"w")
 writer = csv.writer(handle, delimiter='\t', dialect='excel')
 i = 0
 interval = 100
 for query in query_results:
-	print query.seq_len
-	norm = matplotlib.colors.Normalize(vmin=1, vmax=query.seq_len, clip=True)
-        mapper = matplotlib.cm.ScalarMappable(norm=norm, cmap=matplotlib.cm.gist_rainbow)
-	for hit in query.hits:
-		GFFrow = ["HITID",".","TYPE","STARTCOORD","ENDCOORD",".","STRAND",".","ID=X"]
-		for hsp in hit.hsps:
+    print(query.seq_len)
+    norm = matplotlib.colors.Normalize(vmin=1, vmax=query.seq_len, clip=True)
+    mapper = matplotlib.cm.ScalarMappable(norm=norm, cmap=matplotlib.cm.gist_rainbow)
+    for hit in query.hits:
+        GFFrow = ["HITID",".","TYPE","STARTCOORD","ENDCOORD",".","STRAND",".","ID=X"]
+        for hsp in hit.hsps:
                         q_aln = str(hsp.aln_all[0][0].seq)
                         s_aln = str(hsp.aln_all[0][1].seq)
                         #print("_______________________________________________")
@@ -151,4 +151,4 @@ for query in query_results:
 
                         for y in fragments:
                             writer.writerow(hsp_fragment_to_gff_line(y))
-print "Wrote to file",output_filename
+print("Wrote to file",output_filename)
