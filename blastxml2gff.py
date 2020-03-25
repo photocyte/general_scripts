@@ -1,4 +1,4 @@
-#! /usr/bin/python 
+#! /usr/bin/env python
 #Timothy R. Fallon 2015
 
 import csv
@@ -20,12 +20,13 @@ def strip_suffix(text, suffix):
 ##
 
 def hsp_fragment_to_gff_line(y):
+    ##Once fed to this function, y is a dict
     q_start = y["q_start"]
     q_end = y["q_end"]
     h_start = y["h_start"]
     h_end = y["h_end"]
     strand = y["strand"]
-    description="query_start:"+str(q_start)+" "+"query_end:"+str(q_end)
+    description="query_start:"+str(q_start)+",query_end:"+str(q_end)+",bitscore:"+str(y["bitscore"])+",evalue:"+str(y["evalue"])
     color = mapper.to_rgba((q_start+q_end)/2.0,alpha=None)
     color_hex = '#'+("%0.2X" % int(color[0]*255)+("%0.2X" % int(color[1]*255))+("%0.2X" % int(color[2]*255)))
     GFFrow[0] = hit.id
@@ -106,6 +107,9 @@ for query in query_results:
                                     aln_index_to_nucl_index[aln_i] = "X"
                         #print(aln_index_to_nucl_index)
                         #exit()
+
+                        
+                        ##Convert HSP object Bio.SearchIO._model.hsp.HSP to dict object
                         fragments = []
                         if fragments_to_make > 1:
                             for f in range(0,fragments_to_make):
@@ -128,6 +132,8 @@ for query in query_results:
                                 frag["q_end"] = hsp.query_end+1
                                 frag["strand"] = hsp.hit_strand
                                 frag["h_id"] = hit.id
+                                frag["bitscore"] = hsp.bitscore
+                                frag["evalue"] = hsp.evalue
                                 if hsp.hit_strand == 1:
                                     frag["h_start"] = nucl_start+1
                                     frag["h_end"] = nucl_end+3
@@ -147,6 +153,8 @@ for query in query_results:
                                 frag["h_end"] = hsp.hit_end+1
                             frag["strand"] = hsp.hit_strand
                             frag["h_id"] = hit.id
+                            frag["bitscore"] = hsp.bitscore
+                            frag["evalue"] = hsp.evalue
                             fragments.append(frag)
 
                         for y in fragments:
