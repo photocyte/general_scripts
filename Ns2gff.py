@@ -1,4 +1,4 @@
-#! /usr/bin/python 
+#! /usr/bin/env python
 #Timothy R. Fallon 2015
 
 import csv
