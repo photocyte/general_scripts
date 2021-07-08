@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 #Timothy R. Fallon 2015
 
+##Point of this script is to take a (complicated) blastxml file and boil it down to a simple GFF file that can be viewed in a genome browser
+
 import csv
 import Bio
 import Bio.SearchIO
@@ -39,8 +41,6 @@ def hsp_fragment_to_gff_line(y):
         GFFrow[6] = "-"
     GFFrow[8] = "ID="+query.id+str(id(y))+str(random.randint(1e6,1e7))+";Description="+description+";Color="+str(color_hex)
     return GFFrow
-
-##Point of this script is to take a (complicated) blastxml file and boil it down to a simple GFF file that can be viewed in a genome browser
 
 parser = argparse.ArgumentParser()
 parser.add_argument('blast_output_xml',type=str,help='The blast output xml (input file)')
