@@ -35,7 +35,7 @@ def hsp_fragment_to_gff_line(y):
     GFFrow[2] = "blast_hit"
     GFFrow[3] = h_start
     if strand == 1:
-        GFFrow[4] = h_end
+        GFFrow[4] = h_end -1 ##Noticed this while troubleshooting gene liftovers
     elif strand == -1:
         GFFrow[4] = h_end -1 ## Noticed this while troubleshooting gene liftovers, bit of a bandaid but it should work
 
@@ -43,7 +43,7 @@ def hsp_fragment_to_gff_line(y):
         GFFrow[6] = "+"
     if strand == -1:
         GFFrow[6] = "-"
-    GFFrow[8] = "ID="+query.id+"__"+str(id(y))+"__"+str(random.randint(1e6,1e7))+";Description="+description+";Color="+str(color_hex)
+    GFFrow[8] = "ID="+query.id+"__"+str(id(y))+"__"+str(random.randint(1e6,1e7))+";description="+description+";color="+str(color_hex)
     return GFFrow
 
 parser = argparse.ArgumentParser()
